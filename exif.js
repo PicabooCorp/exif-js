@@ -367,16 +367,23 @@
 
     function getImageData(img, callback) {
         function handleBinaryFile(binFile) {
-            var data = findEXIFinJPEG(binFile);
-            img.exifdata = data || {};
-            var iptcdata = findIPTCinJPEG(binFile);
-            img.iptcdata = iptcdata || {};
-            if (EXIF.isXmpEnabled) {
-               var xmpdata= findXMPinJPEG(binFile);
-               img.xmpdata = xmpdata || {};               
-            }
-            if (callback) {
-                callback.call(img);
+            try {
+                var data = findEXIFinJPEG(binFile);
+                img.exifdata = data || {};
+                var iptcdata = findIPTCinJPEG(binFile);
+                img.iptcdata = iptcdata || {};
+                if (EXIF.isXmpEnabled) {
+                    var xmpdata= findXMPinJPEG(binFile);
+                    img.xmpdata = xmpdata || {};               
+                }
+                if (callback) {
+                    callback.call(img);
+                }
+            } catch (e) {
+                console.log('Caught error trying to process image data', e);
+                if (callback) {
+                    callback.call(img);
+                }
             }
         }
 
